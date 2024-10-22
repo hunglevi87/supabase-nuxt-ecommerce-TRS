@@ -48,7 +48,7 @@ A modern e-commerce platform built with Vue.js, Nuxt.js, and Supabase, offering 
 1. **Clone the repository**
 ```bash
 git clone https://github.com/haithanhphan1603/supabase-nuxt-ecommerce.git
-cd supbase-nuxt-ecommerce
+cd supabase-nuxt-ecommerce
 ```
 
 2. **Install dependencies**
@@ -65,9 +65,6 @@ SUPABASE_KEY=your_supabase_anon_key
 4. **Run development server**
 ```bash
 npm run dev
-# or
-yarn dev
-```
 
 ## 🏗️ Project Structure
 
@@ -123,16 +120,10 @@ yarn dev
 1. **Build the application**
 ```bash
 npm run build
-# or
-yarn build
-```
 
 2. **Deploy to your hosting platform**
 ```bash
 npm run deploy
-# or
-yarn deploy
-```
 
 ## 🧪 Testing (to be implemented)
 
