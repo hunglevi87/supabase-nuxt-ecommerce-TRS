@@ -40,15 +40,7 @@ export type Database = {
           streetAddress?: string | null
           userId?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "address_user_id_fkey"
-            columns: ["userId"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       cart: {
         Row: {
@@ -201,15 +193,7 @@ export type Database = {
           updatedAt?: string | null
           userId?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "orders_user_id_fkey"
-            columns: ["userId"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       payments: {
         Row: {
@@ -262,6 +246,7 @@ export type Database = {
           description: string | null
           id: number
           imageUrls: string[] | null
+          inStock: boolean | null
           mainCategory: number | null
           name: string
           primaryImage: string | null
@@ -277,6 +262,7 @@ export type Database = {
           description?: string | null
           id?: never
           imageUrls?: string[] | null
+          inStock?: boolean | null
           mainCategory?: number | null
           name: string
           primaryImage?: string | null
@@ -292,6 +278,7 @@ export type Database = {
           description?: string | null
           id?: never
           imageUrls?: string[] | null
+          inStock?: boolean | null
           mainCategory?: number | null
           name?: string
           primaryImage?: string | null
@@ -348,6 +335,24 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          firstname: string | null
+          id: string
+          lastname: string | null
+        }
+        Insert: {
+          firstname?: string | null
+          id: string
+          lastname?: string | null
+        }
+        Update: {
+          firstname?: string | null
+          id?: string
+          lastname?: string | null
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           id: number
@@ -381,32 +386,7 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "reviews_user_id_fkey"
-            columns: ["userId"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
         ]
-      }
-      users: {
-        Row: {
-          firstName: string | null
-          id: string
-          lastName: string | null
-        }
-        Insert: {
-          firstName?: string | null
-          id: string
-          lastName?: string | null
-        }
-        Update: {
-          firstName?: string | null
-          id?: string
-          lastName?: string | null
-        }
-        Relationships: []
       }
       vendors: {
         Row: {
@@ -438,21 +418,21 @@ export type Database = {
       wishlist: {
         Row: {
           created_at: string | null
-          id: number
+          id: string | null
           product_id: number
           updated_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string | null
-          id?: never
+          id?: string | null
           product_id: number
           updated_at?: string | null
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string | null
-          id?: never
+          id?: string | null
           product_id?: number
           updated_at?: string | null
           user_id?: string
@@ -465,13 +445,6 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "wishlist_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
@@ -479,6 +452,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_add_to_wishlist: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: boolean
+      }
+      get_wishlist_count: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: number
+      }
+      is_member_of: {
+        Args: {
+          _user_id: string
+          _cart_id: string
+        }
+        Returns: boolean
+      }
       slugify: {
         Args: {
           value: string

@@ -116,7 +116,7 @@ export const useApiServices = () => {
   async function fetchProduct(productId: number) {
     const { data, error } = await supabase
       .from('products')
-      .select('name, unitPrice, primaryImage, vendors(name),currency')
+      .select('name, unitPrice, primaryImage, vendors(name),currency,inStock')
       .eq('id', productId)
     if (error) {
       console.error('Error fetching product', error)
