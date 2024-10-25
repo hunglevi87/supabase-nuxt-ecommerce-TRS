@@ -247,8 +247,8 @@ export type Database = {
           id: number
           imageUrls: string[] | null
           inStock: boolean | null
-          mainCategory: number | null
           name: string
+          primaryCategoryId: number | null
           primaryImage: string | null
           productType: Database["public"]["Enums"]["productType"] | null
           slug: string | null
@@ -263,8 +263,8 @@ export type Database = {
           id?: never
           imageUrls?: string[] | null
           inStock?: boolean | null
-          mainCategory?: number | null
           name: string
+          primaryCategoryId?: number | null
           primaryImage?: string | null
           productType?: Database["public"]["Enums"]["productType"] | null
           slug?: string | null
@@ -279,8 +279,8 @@ export type Database = {
           id?: never
           imageUrls?: string[] | null
           inStock?: boolean | null
-          mainCategory?: number | null
           name?: string
+          primaryCategoryId?: number | null
           primaryImage?: string | null
           productType?: Database["public"]["Enums"]["productType"] | null
           slug?: string | null
@@ -290,8 +290,8 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "products_mainCategory_fkey"
-            columns: ["mainCategory"]
+            foreignKeyName: "products_primaryCategoryId_fkey"
+            columns: ["primaryCategoryId"]
             isOneToOne: false
             referencedRelation: "categories"
             referencedColumns: ["id"]
