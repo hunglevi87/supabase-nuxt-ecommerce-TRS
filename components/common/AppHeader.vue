@@ -16,9 +16,9 @@ const user = useSupabaseUser()
 const links = ref([
   { to: '/', label: 'HOME' },
   { to: '/about', label: 'ABOUT' },
-  { to: '/new-releases', label: 'NEW RELEASES' },
+  { to: '/collections/new-release', label: 'NEW RELEASES' },
   { to: '/pre-orders', label: 'PRE-ORDERS' },
-  { to: '/genres', label: 'GENRES' },
+  { to: '/collections/all', label: 'GENRES' },
   { to: '/faq', label: 'FAQ' },
 ])
 

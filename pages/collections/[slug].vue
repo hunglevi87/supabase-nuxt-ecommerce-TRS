@@ -109,10 +109,8 @@ async function fetchCategory() {
 }
 
 async function fetchTotalProducts() {
-  totalProducts.value = await getTotalProductsByCategory(
-    category.value?.id ?? 0,
-    searchInfo,
-  )
+  totalProducts.value =
+    (await getTotalProductsByCategory(category.value?.id ?? 0, searchInfo)) || 0
 }
 
 async function fetchProducts() {
