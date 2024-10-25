@@ -12,9 +12,9 @@ import {
 import AppFooterItem from './AppFooterItem.vue'
 
 const footerLinks = ref([
-  { to: '/new-releases', label: 'New Release' },
+  { to: '/collections/new-release', label: 'New Release' },
   { to: '/pre-orders', label: 'Pre-orders' },
-  { to: '/genres', label: 'Genres' },
+  { to: '/collections/all', label: 'Genres' },
   { to: '/pop', label: 'Pop' },
 ])
 

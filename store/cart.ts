@@ -1,11 +1,7 @@
-import { v4 as uuidv4 } from 'uuid'
-import type { Tables } from '~/types/database.types'
+import type { TablesInsert } from '~/types/database.types'
 
-import { defineStore } from 'pinia'
-import { ref, computed, watch } from 'vue'
-
-type CartItem = Tables<'cartItem'>
-type Cart = Tables<'cart'>
+type CartItem = TablesInsert<'cartItem'>
+type Cart = TablesInsert<'cart'>
 
 export const useCartStore = defineStore(
   'cart',
@@ -14,8 +10,14 @@ export const useCartStore = defineStore(
     const cart = ref<Cart | null>(null)
     const user = useSupabaseUser()
     const supabase = useSupabaseClient()
-    const { deleteCartItems, deleteCart, updateCartItems, updateCart } =
-      useApiServices()
+    const {
+      deleteCartItems,
+      deleteCart,
+      updateCartItems,
+      updateCart,
+      fetchCartItemsByCartId,
+      fetchCartByUserId,
+    } = useApiServices()
 
     const isMiniCartVisible = ref(false)
 
@@ -26,7 +28,7 @@ export const useCartStore = defineStore(
     async function createOrUpdateCart() {
       try {
         if (!cart.value) {
-          cart.value = createNewCart(user.value?.id || 'anonymous')
+          cart.value = createNewCart(user.value?.id as string)
         }
 
         cart.value.totalprice = calculateTotalPrice(cartItems.value)
@@ -49,7 +51,6 @@ export const useCartStore = defineStore(
     function createNewCart(createdBy: string) {
       const now = new Date().toISOString()
       return {
-        id: uuidv4(),
         totalprice: 0,
         currency: '$',
         createdat: now,
@@ -103,8 +104,8 @@ export const useCartStore = defineStore(
       if (cart.value) {
         try {
           Promise.all([
-            await deleteCart(cart.value.id),
-            await deleteCartItems(cart.value.id),
+            await deleteCart(cart.value.id as string),
+            await deleteCartItems(cart.value.id as string),
           ])
         } catch (error) {
           console.error('Error clearing cart:', error)
@@ -136,32 +137,13 @@ export const useCartStore = defineStore(
     async function syncCartWithUser() {
       try {
         // First, try to fetch the user's existing cart from the database
-        const { data: existingCart, error: fetchError } = await supabase
-          .from('cart')
-          .select('*')
-          .eq('createdby', user.value?.id)
-          .order('updatedat', { ascending: false })
-          .limit(1)
-          .single()
-
-        if (fetchError && fetchError.code !== 'PGRST116') {
-          console.error('Error fetching cart:', fetchError)
-          throw fetchError
-        }
+        const existingCart = await fetchCartByUserId(user.value?.id as string)
 
         if (existingCart) {
           // If a cart exists in the database, use it
           cart.value = existingCart
           // Fetch cart items for this cart
-          const { data: items, error: itemsError } = await supabase
-            .from('cartItem')
-            .select('*')
-            .eq('cartId', existingCart.id)
-
-          if (itemsError) {
-            console.error('Error fetching cart items:', itemsError)
-            throw itemsError
-          }
+          const items = await fetchCartItemsByCartId(existingCart.id)
 
           cartItems.value = items || []
         } else if (cart.value) {

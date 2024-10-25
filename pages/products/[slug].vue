@@ -1,62 +1,100 @@
 <template>
-  <div class="my-6 md:my-12">
+  <div class="container mx-auto px-4 my-6 md:my-12">
     <ClientOnly>
       <Toaster />
     </ClientOnly>
     <Head>
       <Title>{{ product?.name }}</Title>
     </Head>
-    <div class="grid grid-cols-1 md:grid-cols-[4fr,3fr] gap-6 md:gap-10">
-      <AspectRatio
-        :ratio="16 / 9"
-        class="flex justify-center h-full items-center"
-      >
+
+    <div class="grid grid-cols-1 md:grid-cols-[4fr,3fr] gap-8 md:gap-12">
+      <!-- Image Section -->
+      <div class="relative group">
         <img
-          class="object-cover w-full max-h-[520px]"
-          :src="product?.primaryImage"
+          class="object-contain w-full max-h-[520px] aspect-[4/3]"
+          :src="product?.primaryImage as string"
           :alt="product?.name"
         />
-      </AspectRatio>
-      <div>
-        <AppLink class="text-lg md:text-xl">{{
-          product?.vendors?.name
-        }}</AppLink>
-        <h1 class="text-2xl md:text-4xl font-bold">{{ product?.name }}</h1>
-        <h4
-          class="text-lg md:text-xl font-bold text-slate-600 dark:text-slate-300 mt-2"
-        >
-          {{ product?.currency }} {{ product?.unitPrice }}
-        </h4>
+        <div class="absolute top-4 right-4 space-x-2">
+          <Button
+            class="p-2 bg-white/90 rounded-full shadow hover:bg-white transition"
+          >
+            <Heart class="text-red-600" />
+          </Button>
+        </div>
+      </div>
 
+      <!-- Product Details -->
+      <div class="space-y-6">
+        <!-- Vendor and Title -->
+        <div>
+          <AppLink
+            :to="`/vendors/${product?.vendors?.name}`"
+            class="text-lg md:text-xl text-violet-600 hover:text-violet-700 font-medium"
+          >
+            {{ product?.vendors?.name }}
+          </AppLink>
+          <h1 class="text-3xl md:text-4xl font-bold mt-2">
+            {{ product?.name }}
+          </h1>
+          <div class="flex items-center gap-2 mt-3">
+            <span class="text-2xl md:text-3xl font-bold text-violet-600">
+              {{ product?.currency }} {{ product?.unitPrice }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Add to Cart Button -->
         <Button
-          class="my-6 md:my-8 uppercase font-extrabold px-8 md:px-32 py-2 w-full md:w-auto"
-          >add to cart</Button
+          class="w-full md:w-auto uppercase font-bold px-8 py-3 hover:bg-violet-700 transition-colors"
         >
-        <div class="relative mb-6 md:mb-8">
+          Add to Cart
+        </Button>
+
+        <!-- Description -->
+        <div class="relative">
           <div
             ref="description"
-            class="overflow-hidden relative"
+            class="prose dark:prose-invert max-w-none overflow-hidden relative"
             :class="{ 'max-h-24': !showFullDescription }"
           >
             {{ product?.description }}
           </div>
+          <div
+            v-if="!showFullDescription && isOverflowing"
+            class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white dark:from-gray-900"
+          />
           <button
             v-if="isOverflowing"
-            class="text-violet-600 text-right w-full"
+            class="text-violet-600 font-medium hover:text-violet-700 mt-2"
             @click="toggleDescription"
           >
             {{ showFullDescription ? 'Read Less' : 'Read More' }}
           </button>
+          <div
+            v-if="!showFullDescription && isOverflowing"
+            class="absolute bottom-0 left-0 right-0 h-12 z-20 cursor-pointer"
+            @click="toggleDescription"
+          />
         </div>
 
-        <div class="flex flex-col gap-1">
-          <div class="flex gap-1">
-            <strong>Format:</strong>
-            <span>{{ product?.productType }} Vinyl</span>
-          </div>
-          <div class="flex gap-1">
-            <strong>Genres:</strong>
-            <span>{{ product?.mainCategory.name }}</span>
+        <!-- Product Details -->
+        <div class="space-y-4 border-t pt-6">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <h3 class="font-medium text-gray-500 dark:text-gray-400">
+                Format
+              </h3>
+              <p class="mt-1 font-medium">{{ product?.productType }} Vinyl</p>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-500 dark:text-gray-400">
+                Primary Genre
+              </h3>
+              <p class="mt-1 font-medium">
+                {{ product?.primaryCategory?.name }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -66,20 +104,26 @@
 
 <script lang="ts" setup>
 import Toaster from '~/components/ui/toast/Toaster.vue'
-import AspectRatio from '~/components/ui/aspect-ratio/AspectRatio.vue'
 import { useToast } from '~/components/ui/toast'
-import type { Tables } from '~/types/database.types'
 import AppLink from '~/components/common/AppLink.vue'
-
-type ProductsWithRelations = Tables<'products'> & {
-  vendors: { name: string }
-  mainCategory: { name: string }
-}
+import type { QueryData } from '@supabase/supabase-js'
+import { Heart } from 'lucide-vue-next'
 
 const { toast } = useToast()
 const supabase = useSupabaseClient()
 const route = useRoute()
-const product = ref<ProductsWithRelations>()
+
+const productWithVendorsCategoriesQuery = supabase
+  .from('products')
+  .select('*,vendors(name),primaryCategory:primaryCategoryId(name)')
+  .eq('slug', route.params.slug)
+  .single()
+
+type ProductWithVendorsCategories = QueryData<
+  typeof productWithVendorsCategoriesQuery
+>
+
+const product = ref<ProductWithVendorsCategories | null>(null)
 
 const showFullDescription = ref(false)
 const description = ref<HTMLElement | null>(null)
@@ -97,11 +141,9 @@ watch(height, () => {
   }
 })
 
-async function fetchProduct(slug: string) {
-  const { data, error } = await supabase
-    .from('products')
-    .select('*,vendors(name),mainCategory(name)')
-    .eq('slug', slug)
+async function fetchProduct() {
+  const { data, error } = await productWithVendorsCategoriesQuery
+
   if (error) {
     console.log(error)
     toast({
@@ -110,10 +152,14 @@ async function fetchProduct(slug: string) {
       variant: 'destructive',
     })
   }
-  product.value = data?.[0]
+  product.value = data
 }
 
-fetchProduct(route.params.slug as string)
+fetchProduct()
 </script>
 
-<style></style>
+<style>
+.prose {
+  transition: max-height 0.3s ease-in-out;
+}
+</style>

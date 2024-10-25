@@ -1,11 +1,10 @@
-import type { Tables } from '~/types/database.types'
+import type { TablesInsert } from '~/types/database.types'
 import type { CollectionSearchParams } from '~/types/search.types'
 import { SortBy } from '~/types/search.types'
 
 const PRODUCTS_CATEGORIES = 'products_categories'
-type Product = Tables<'products'>
-type CartItem = Tables<'cartItem'>
-type Cart = Tables<'cart'>
+type CartItem = TablesInsert<'cartItem'>
+type Cart = TablesInsert<'cart'>
 
 export const useApiServices = () => {
   const supabase = useSupabaseClient()
@@ -68,10 +67,7 @@ export const useApiServices = () => {
       console.error(error)
       return []
     }
-    const aggregatedData = data.map(
-      (item: Record<string, Product>) => item.products,
-    )
-    return aggregatedData
+    return data.map((item) => item.products)
   }
 
   async function getCategoryBySlug(slug: string) {
@@ -120,6 +116,7 @@ export const useApiServices = () => {
       .eq('id', productId)
     if (error) {
       console.error('Error fetching product', error)
+      throw error
     }
     return data?.[0]
   }
@@ -167,7 +164,7 @@ export const useApiServices = () => {
       .eq('user_id', userId)
     if (error) {
       console.error(error)
-      return []
+      throw error
     }
     return data
   }
@@ -181,6 +178,7 @@ export const useApiServices = () => {
 
     if (error) {
       console.error('Error deleting wishlist item:', error)
+      throw error
     }
   }
 
@@ -190,7 +188,37 @@ export const useApiServices = () => {
       .insert([{ user_id: userId, product_id: productId }])
     if (error) {
       console.error('Error adding to wishlist:', error)
+      throw error
     }
+  }
+
+  async function fetchCartItemsByCartId(cartId: string) {
+    const { data, error } = await supabase
+      .from('cartItem')
+      .select('*')
+      .eq('cartId', cartId)
+
+    if (error) {
+      console.error('Error fetching cart items:', error)
+      throw error
+    }
+    return data
+  }
+
+  async function fetchCartByUserId(userId: string) {
+    const { data, error } = await supabase
+      .from('cart')
+      .select('*')
+      .eq('createdby', userId as string)
+      .order('updatedat', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching cart:', error)
+      throw error
+    }
+    return data
   }
 
   return {
@@ -205,5 +233,7 @@ export const useApiServices = () => {
     deleteWishlistItemApi,
     addToWishlistApi,
     fetchProduct,
+    fetchCartItemsByCartId,
+    fetchCartByUserId,
   }
 }

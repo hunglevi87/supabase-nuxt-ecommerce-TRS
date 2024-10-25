@@ -74,18 +74,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { useCartStore } from '~/store/cart'
 import { useWishlistStore } from '~/store/wishlist'
-import type { Tables } from '~/types/database.types'
+import type { Tables, TablesInsert } from '~/types/database.types'
 import { Trash2 } from 'lucide-vue-next'
-import { v4 as uuidv4 } from 'uuid'
 
 interface Props {
   productId: number
 }
 
-type CartItem = Tables<'cartItem'>
+type CartItem = TablesInsert<'cartItem'>
 type Product = Tables<'products'>
 
 const props = defineProps<Props>()
@@ -102,7 +100,6 @@ function addToCart() {
     price: product.value?.unitPrice as number,
     productId: props.productId,
     quantity: 1,
-    id: uuidv4(),
     cartId: null,
   }
   cartStore.addToCart(cartItem)

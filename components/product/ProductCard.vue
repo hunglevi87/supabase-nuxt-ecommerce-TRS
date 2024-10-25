@@ -73,14 +73,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import Card from '../ui/card/Card.vue'
-import AspectRatio from '../ui/aspect-ratio/AspectRatio.vue'
 import { useElementHover, useWindowSize } from '@vueuse/core'
 import { HeartIcon, Loader } from 'lucide-vue-next'
+import Card from '../ui/card/Card.vue'
+import AspectRatio from '../ui/aspect-ratio/AspectRatio.vue'
 import { useCartStore } from '~/store/cart'
 import { useWishlistStore } from '~/store/wishlist'
-import type { Tables } from '~/types/database.types'
-import { v4 as uuidv4 } from 'uuid'
+import type { Tables, TablesInsert } from '~/types/database.types'
 import {
   Tooltip,
   TooltipContent,
@@ -92,7 +91,7 @@ type Product = Tables<'products'> & {
   vendors: { name: string }
 }
 
-type CartItem = Tables<'cartItem'>
+type CartItem = TablesInsert<'cartItem'>
 
 interface Props {
   product: Product
@@ -148,7 +147,6 @@ function addToCart() {
     price: props.product.unitPrice as number,
     productId: props.product.id,
     quantity: 1,
-    id: uuidv4(),
     cartId: null,
   }
   cartStore.addToCart(cartItem)
