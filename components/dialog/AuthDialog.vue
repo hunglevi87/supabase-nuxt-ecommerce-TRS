@@ -68,7 +68,7 @@ const isDialogOpen = defineModel({
 })
 
 function redirectToAuth() {
-  navigateTo('/auth')
+  navigateTo('/account/auth')
 }
 
 function cancelAction() {

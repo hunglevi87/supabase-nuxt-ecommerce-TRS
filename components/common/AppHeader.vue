@@ -37,9 +37,9 @@ const toggleMobileMenu = () => {
 
 const navigateToUser = () => {
   if (user.value) {
-    navigateTo('/profile')
+    navigateTo('/account/profile')
   } else {
-    navigateTo('/auth')
+    navigateTo('/account/auth')
   }
 }
 
