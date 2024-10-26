@@ -7,7 +7,57 @@
       <Title>{{ product?.name }}</Title>
     </Head>
 
-    <div class="grid grid-cols-1 md:grid-cols-[4fr,3fr] gap-8 md:gap-12">
+    <div
+      v-if="isLoading"
+      class="grid grid-cols-1 md:grid-cols-[4fr,3fr] gap-8 md:gap-12"
+    >
+      <div class="relative group">
+        <Skeleton class="object-contain w-full max-h-[520px] aspect-[4/3]" />
+        <div class="absolute top-4 right-4 space-x-2">
+          <Button
+            class="p-2 bg-white/90 rounded-full shadow hover:bg-white transition"
+          >
+            <Heart class="text-red-600" />
+          </Button>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div>
+          <Skeleton class="h-8 w-48" />
+          <Skeleton class="h-12 w-full mt-2" />
+          <div class="flex items-center gap-2 mt-3">
+            <Skeleton class="h-10 w-32" />
+          </div>
+        </div>
+
+        <Skeleton class="h-12 w-full md:w-48" />
+
+        <div class="relative">
+          <div class="space-y-2">
+            <Skeleton class="h-4 w-full" />
+            <Skeleton class="h-4 w-full" />
+            <Skeleton class="h-4 w-3/4" />
+            <Skeleton class="h-4 w-5/6" />
+          </div>
+        </div>
+
+        <div class="space-y-4 border-t pt-6">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <Skeleton class="h-4 w-24 mb-2" />
+              <Skeleton class="h-6 w-32" />
+            </div>
+            <div>
+              <Skeleton class="h-4 w-24 mb-2" />
+              <Skeleton class="h-6 w-32" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="grid grid-cols-1 md:grid-cols-[4fr,3fr] gap-8 md:gap-12">
       <!-- Image Section -->
       <div class="relative group">
         <img
@@ -99,6 +149,7 @@
         </div>
       </div>
     </div>
+    <!-- Skeleton -->
   </div>
 </template>
 
@@ -108,10 +159,13 @@ import { useToast } from '~/components/ui/toast'
 import AppLink from '~/components/common/AppLink.vue'
 import type { QueryData } from '@supabase/supabase-js'
 import { Heart } from 'lucide-vue-next'
+import Skeleton from '~/components/ui/skeleton/Skeleton.vue'
 
 const { toast } = useToast()
 const supabase = useSupabaseClient()
 const route = useRoute()
+
+const isLoading = ref(false)
 
 const productWithVendorsCategoriesQuery = supabase
   .from('products')
@@ -142,6 +196,7 @@ watch(height, () => {
 })
 
 async function fetchProduct() {
+  isLoading.value = true
   const { data, error } = await productWithVendorsCategoriesQuery
 
   if (error) {
@@ -153,6 +208,7 @@ async function fetchProduct() {
     })
   }
   product.value = data
+  isLoading.value = false
 }
 
 fetchProduct()

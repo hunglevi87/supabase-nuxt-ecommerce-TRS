@@ -51,15 +51,11 @@
 
       <!-- Actions -->
       <div class="flex items-center gap-2 md:gap-3 pt-2">
-        <button
-          class="flex-1 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-300 text-white px-3 py-2 text-xs md:px-4 md:py-2.5 transition-colors duration-200 flex items-center justify-center gap-2 disabled:cursor-not-allowed group/button"
-          :disabled="!product?.inStock"
-          @click="addToCart"
-        >
+        <Button class="flex-1" :disabled="!product?.inStock" @click="addToCart">
           <span class="text-sm font-semibold">
             {{ product?.inStock ? 'Add to Cart' : 'Out of Stock' }}
           </span>
-        </button>
+        </Button>
 
         <button
           class="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors duration-200 text-gray-600 hover:text-red-600"
