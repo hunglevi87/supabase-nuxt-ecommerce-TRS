@@ -72,7 +72,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import { useElementHover, useWindowSize } from '@vueuse/core'
 import { HeartIcon, Loader } from 'lucide-vue-next'
 import Card from '../ui/card/Card.vue'

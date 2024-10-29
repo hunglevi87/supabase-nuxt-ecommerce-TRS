@@ -38,7 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import AspectRatio from '../ui/aspect-ratio/AspectRatio.vue'
 import Skeleton from '../ui/skeleton/Skeleton.vue'
 import type { Tables } from '~/types/database.types'

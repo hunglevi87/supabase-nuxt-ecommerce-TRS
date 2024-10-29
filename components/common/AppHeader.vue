@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import {
   ShoppingBagIcon,
   CircleUserRoundIcon,
@@ -37,9 +36,9 @@ const toggleMobileMenu = () => {
 
 const navigateToUser = () => {
   if (user.value) {
-    navigateTo('/profile')
+    navigateTo('/account/profile')
   } else {
-    navigateTo('/auth')
+    navigateTo('/account/auth')
   }
 }
 
