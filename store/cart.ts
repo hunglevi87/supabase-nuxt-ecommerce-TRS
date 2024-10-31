@@ -1,3 +1,4 @@
+import { useToast } from '~/components/ui/toast'
 import type { TablesInsert } from '~/types/database.types'
 
 type CartItem = TablesInsert<'cartItem'>
@@ -10,6 +11,7 @@ export const useCartStore = defineStore(
     const cart = ref<Cart | null>(null)
     const user = useSupabaseUser()
     const supabase = useSupabaseClient()
+    const { toast } = useToast()
     const {
       deleteCartItems,
       deleteCart,
@@ -44,6 +46,10 @@ export const useCartStore = defineStore(
         }))
         await updateCartItems(aggregatedCartItems)
       } catch (error) {
+        toast({
+          title: 'Error updating cart',
+          description: error.message,
+        })
         console.error('Error updating cart:', error)
       }
     }
