@@ -2,53 +2,38 @@
   <AuthCard is-login>
     <form class="space-y-6" @submit="onSubmit">
       <div class="grid w-full items-center gap-4">
-        <div class="flex flex-col space-y-1.5">
-          <Label for="email">Email</Label>
-          <Input
-            id="email"
-            v-model="email"
-            placeholder="Email"
-            type="email"
-            class="w-full"
-          />
-          <span v-if="errors.email" class="text-sm text-red-500">{{
-            errors.email
-          }}</span>
-        </div>
-        <div class="flex flex-col space-y-1.5">
-          <Label for="password">Password</Label>
-          <Input
-            id="password"
-            v-model="password"
-            placeholder="Password"
-            type="password"
-            class="w-full"
-          />
-          <span v-if="errors.password" class="text-sm text-red-500">{{
-            errors.password
-          }}</span>
-        </div>
+        <FormInput
+          name="email"
+          label="Email"
+          placeholder="Enter your email here"
+          type="email"
+        ></FormInput>
+        <FormInput
+          name="password"
+          label="Password"
+          placeholder="Enter your password here"
+          type="password"
+        ></FormInput>
       </div>
       <span v-if="errorMsg" class="text-sm text-red-500">{{ errorMsg }}</span>
-      <Button type="submit">Login</Button>
+      <Button class="w-full" type="submit">Login</Button>
     </form>
   </AuthCard>
 </template>
 
 <script lang="ts" setup>
+import { useForm } from 'vee-validate'
 import AuthCard from '~/components/account/AuthCard.vue'
+import FormInput from '~/components/account/FormInput.vue'
 
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 const errorMsg = ref('')
-
 const { loginSchema } = validators()
 
-const { value: email } = useField<string>('email')
-const { value: password } = useField<string>('password')
-
-const { handleSubmit, errors } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: loginSchema,
+  validateOnMount: false,
 })
 
 const onSubmit = handleSubmit(async (values) => {

@@ -38,7 +38,7 @@ const navigateToUser = () => {
   if (user.value) {
     navigateTo('/account/profile')
   } else {
-    navigateTo('/account/auth')
+    navigateTo('/account/login')
   }
 }
 
