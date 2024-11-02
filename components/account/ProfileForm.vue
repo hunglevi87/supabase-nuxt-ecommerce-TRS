@@ -46,12 +46,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useToast } from '../ui/toast'
 
 const user = useSupabaseUser()
 const supabase = useSupabaseClient()
 const errorMsg = ref('')
 
 const { userInfoSchema } = validators()
+
+const { toast } = useToast()
 
 // Initialize form with vee-validate
 const { handleSubmit, resetForm } = useForm({
@@ -71,8 +74,17 @@ const onSubmit = handleSubmit(async (values) => {
         lastName: values.lastName,
       },
     })
-    if (error) throw error
-    // Show success message or redirect
+    if (error) {
+      throw createError({
+        name: 'Update failed',
+        message: error.message,
+      })
+    }
+    toast({
+      variant: 'success',
+      description: 'Your profile has been updated',
+      title: 'Profile updated',
+    })
   } catch (error) {
     errorMsg.value = error.message
     console.error('Error updating profile:', error)
