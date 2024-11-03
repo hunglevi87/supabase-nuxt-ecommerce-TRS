@@ -418,21 +418,21 @@ export type Database = {
       wishlist: {
         Row: {
           created_at: string | null
-          id: string | null
+          id: string
           product_id: number
           updated_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string | null
-          id?: string | null
+          id?: string
           product_id: number
           updated_at?: string | null
           user_id?: string
         }
         Update: {
           created_at?: string | null
-          id?: string | null
+          id?: string
           product_id?: number
           updated_at?: string | null
           user_id?: string
@@ -470,6 +470,27 @@ export type Database = {
           _cart_id: string
         }
         Returns: boolean
+      }
+      search_products_by_name_prefix: {
+        Args: {
+          prefix: string
+        }
+        Returns: {
+          createdAt: string | null
+          currency: string | null
+          description: string | null
+          id: number
+          imageUrls: string[] | null
+          inStock: boolean | null
+          name: string
+          primaryCategoryId: number | null
+          primaryImage: string | null
+          productType: Database["public"]["Enums"]["productType"] | null
+          slug: string | null
+          unitPrice: number | null
+          updatedAt: string | null
+          vendorId: number | null
+        }[]
       }
       slugify: {
         Args: {

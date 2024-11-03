@@ -7,10 +7,17 @@ import {
   HeartIcon,
 } from 'lucide-vue-next'
 import { useCartStore } from '~/store/cart'
+import type { Tables } from '~/types/database.types'
+import SearchProductsDropdown from '../product/SearchProductsDropdown.vue';
+
+type Product = Tables<'products'>
 
 const searchKey = ref('')
 const mobileMenuOpen = ref(false)
 const user = useSupabaseUser()
+const products = ref<Product[]>([])
+
+const { searchProduct } = useApiServices()
 
 const links = ref([
   { to: '/', label: 'HOME' },
@@ -34,6 +41,11 @@ const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
 }
 
+const selectProduct = (product: Product) => {
+  searchKey.value = ''
+  navigateTo(`/products/${product.slug}`)
+}
+
 const navigateToUser = () => {
   if (user.value) {
     navigateTo('/account/profile')
@@ -45,17 +57,32 @@ const navigateToUser = () => {
 const navigateToWishlist = () => {
   navigateTo('/wishlist')
 }
+
+watchDebounced(
+  searchKey,
+  async (value) => {
+    if (value.length > 1) {
+      products.value = await searchProduct(value)
+    } else {
+      products.value = []
+    }
+  },
+  {
+    debounce: 300,
+  },
+)
 </script>
 
 <template>
   <header class="sticky top-0 z-[1000] bg-background">
-    <div class="container mx-auto py-3 px-4 sm:px-6 lg:px-8">
+    <div class="px-4 sm:px-6 lg:px-16 mx-auto py-3">
       <div class="flex items-center">
         <div class="flex items-center flex-1">
           <CommonAppIcon class="h-8 w-auto sm:h-10" />
           <div class="hidden sm:block mx-4 lg:mx-8 flex-1">
             <CommonAppSearchBar v-model="searchKey" class="w-full" />
           </div>
+          <SearchProductsDropdown :products @select="selectProduct"></SearchProductsDropdown>
         </div>
         <div class="flex items-center">
           <ul class="flex gap-1 items-center">

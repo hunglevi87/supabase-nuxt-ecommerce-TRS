@@ -300,6 +300,26 @@ export const useApiServices = () => {
     return data
   }
 
+  async function searchProduct(productName: string) {
+    const { data, error } = await supabase.rpc(
+      'search_products_by_name_prefix',
+      {
+        prefix: productName,
+      },
+    )
+
+    if (error) {
+      console.error('Error searching product:', error)
+      toast({
+        title: 'Error searching product',
+        description: error.message,
+        variant: 'destructive',
+      })
+      throw apiError(error)
+    }
+    return data
+  }
+
   return {
     getProductsByCategory,
     getCategoryBySlug,
@@ -314,5 +334,6 @@ export const useApiServices = () => {
     fetchProduct,
     fetchCartItemsByCartId,
     fetchCartByUserId,
+    searchProduct,
   }
 }

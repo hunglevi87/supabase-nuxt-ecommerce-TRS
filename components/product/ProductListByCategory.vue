@@ -26,7 +26,7 @@
         <ProductCardSkeleton
           v-for="i in slidesPerView"
           :key="i"
-          class="h-72 w-60"
+          class="h-72 2xl:h-96 w-full"
         />
       </div>
       <Button
@@ -62,6 +62,7 @@ import Button from '../ui/button/Button.vue'
 import { MoveRightIcon, MoveLeftIcon } from 'lucide-vue-next'
 import type { Tables } from '~/types/database.types'
 import ProductCardSkeleton from './ProductCardSkeleton.vue'
+import AspectRatio from '~/components/ui/aspect-ratio/AspectRatio.vue'
 
 type Product = Tables<'products'> & {
   vendors: { name: string }
