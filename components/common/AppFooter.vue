@@ -59,7 +59,7 @@ const toggleSection = (section: string | number) => {
 
 <template>
   <footer class="bg-background pt-10 pb-8">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="px-4 sm:px-6 lg:px-16 mx-auto">
       <div
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 sm:gap-4"
       >

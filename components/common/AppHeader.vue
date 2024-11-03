@@ -54,7 +54,7 @@ const navigateToWishlist = () => {
 watchDebounced(
   searchKey,
   async (value) => {
-    if (value.length > 2) {
+    if (value.length > 1) {
       products.value = await searchProduct(value)
     } else {
       products.value = []
@@ -68,7 +68,7 @@ watchDebounced(
 
 <template>
   <header class="sticky top-0 z-[1000] bg-background">
-    <div class="container mx-auto py-3 px-4 sm:px-6 lg:px-8">
+    <div class="px-4 sm:px-6 lg:px-16 mx-auto py-3">
       <div class="flex items-center">
         <div class="flex items-center flex-1">
           <CommonAppIcon class="h-8 w-auto sm:h-10" />
