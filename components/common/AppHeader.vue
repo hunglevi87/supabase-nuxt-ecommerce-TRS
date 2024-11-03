@@ -8,6 +8,8 @@ import {
 } from 'lucide-vue-next'
 import { useCartStore } from '~/store/cart'
 import type { Tables } from '~/types/database.types'
+import SearchProductsDropdown from '../product/SearchProductsDropdown.vue';
+
 type Product = Tables<'products'>
 
 const searchKey = ref('')
@@ -37,6 +39,11 @@ const hideMiniCart = () => {
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+const selectProduct = (product: Product) => {
+  searchKey.value = ''
+  navigateTo(`/products/${product.slug}`)
 }
 
 const navigateToUser = () => {
@@ -74,8 +81,8 @@ watchDebounced(
           <CommonAppIcon class="h-8 w-auto sm:h-10" />
           <div class="hidden sm:block mx-4 lg:mx-8 flex-1">
             <CommonAppSearchBar v-model="searchKey" class="w-full" />
-            {{ products }}
           </div>
+          <SearchProductsDropdown :products @select="selectProduct"></SearchProductsDropdown>
         </div>
         <div class="flex items-center">
           <ul class="flex gap-1 items-center">
