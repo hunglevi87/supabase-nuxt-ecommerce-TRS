@@ -115,9 +115,6 @@ async function fetchTotalProducts() {
 
 async function fetchProducts() {
   try {
-    if (products.value.length >= (totalProducts.value ?? 0)) {
-      return
-    }
     isLoading.value = true
 
     const fetchedProducts = await getProductsByCategory(
@@ -140,6 +137,9 @@ async function fetchData() {
 function handleScroll(_e: Event) {
   if (collectionRef.value) {
     const element = collectionRef.value
+    if (products.value.length >= (totalProducts.value ?? 0)) {
+      return
+    }
     if (element.getBoundingClientRect().bottom < window.innerHeight) {
       searchInfo.start = searchInfo.start + searchInfo.limit
       fetchProducts()
