@@ -11,7 +11,7 @@
 import Toaster from './components/ui/toast/Toaster.vue'
 useHead({
   titleTemplate: (titleChunk) => {
-    return titleChunk ? `Vinylata | ${titleChunk}` : 'Vinylata'
+    return titleChunk ? `The Relic Shop | ${titleChunk}` : 'The Relic Shop'
   },
 })
 </script>

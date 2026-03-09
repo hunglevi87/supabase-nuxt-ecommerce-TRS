@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   modules: [
+    '@nuxt/content',
+    '@nuxtjs/ionic',
+    '@vite-pwa/nuxt',
     '@pinia/nuxt',
     '@nuxtjs/i18n',
     '@vueuse/nuxt',
@@ -21,6 +24,35 @@ export default defineNuxtConfig({
 
   supabase: {
     redirect: false,
+  },
+
+  pwa: {
+    registerType: 'autoUpdate',
+    manifest: {
+      name: 'The Relic Shop',
+      short_name: 'Relic Shop',
+      description: 'Rare, Elegant, Luxury Items Curated',
+      display: 'standalone',
+      theme_color: '#0f1419',
+      background_color: '#0f1419',
+      start_url: '/',
+      scope: '/',
+      icons: [
+        {
+          src: '/favicon.ico',
+          sizes: '64x64',
+          type: 'image/x-icon',
+        },
+      ],
+    },
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+    },
+    devOptions: {
+      enabled: true,
+      suppressWarnings: true,
+    },
   },
 
   tailwindcss: {
@@ -55,15 +87,30 @@ export default defineNuxtConfig({
     provider: 'google', // sets default provider
     families: [
       {
-        name: 'Roboto', // the 'canonical' name of the font used to look it up in a provider database
+        name: 'Cormorant Garamond',
         provider: 'google', // you can override the provider on a per-family basis
-        // provider specific options can be provided
-        // specific configuration will be used to generate `@font-face` definitions
-        subsets: ['latin', 'greek'],
-        display: 'swap', // or 'block'
-        weight: [400, 700],
-        styles: ['normal', 'italic'],
-        // and produce CSS overrides to reduce layout shift (using fontaine)
+        subsets: ['latin'],
+        display: 'swap',
+        weight: [400, 500, 600, 700],
+        styles: ['normal'],
+        fallbacks: ['serif'],
+      },
+      {
+        name: 'Playfair Display',
+        provider: 'google',
+        subsets: ['latin'],
+        display: 'swap',
+        weight: [400, 500, 600, 700],
+        styles: ['normal'],
+        fallbacks: ['serif'],
+      },
+      {
+        name: 'Inter',
+        provider: 'google',
+        subsets: ['latin'],
+        display: 'swap',
+        weight: [400, 500, 600, 700],
+        styles: ['normal'],
         fallbacks: ['Arial'],
       },
     ],

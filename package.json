@@ -8,16 +8,21 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint . --ext .ts,.vue",
-    "update-types": "npx supabase gen types --lang=typescript --project-id \"agkajtjnmvpxvycwpvrz\" > types/database.types.ts"
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck",
+    "update-types": "pnpm dlx supabase gen types --lang=typescript --project-id \"agkajtjnmvpxvycwpvrz\" > types/database.types.ts"
   },
   "dependencies": {
+    "@nuxt/content": "^3.12.0",
+    "@nuxtjs/ionic": "^1.0.2",
     "@pinia/nuxt": "^0.5.1",
     "@stripe/stripe-js": "^7.0.0",
     "@supabase/supabase-js": "^2.43.2",
     "@vee-validate/nuxt": "^4.13.2",
     "@vee-validate/yup": "^4.15.0",
+    "@vite-pwa/nuxt": "^1.1.1",
     "@vueuse/core": "^10.11.0",
+    "better-sqlite3": "^12.6.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.408.0",
@@ -25,6 +30,7 @@
     "pinia": "^2.1.7",
     "radix-vue": "^1.9.1",
     "stripe": "^18.0.0",
+    "swiper": "^12.1.2",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "vee-validate": "^4.15.0",
@@ -55,5 +61,6 @@
     "shadcn-nuxt": "^0.10.4",
     "supabase": "^1.204.3",
     "typescript": "^5.4.5"
-  }
+  },
+  "packageManager": "pnpm@10.31.0"
 }
