@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   try {
     const config = useRuntimeConfig()
     const stripe = new Stripe(config.stripeSecretKey, {
-      apiVersion: '2025-03-31.basil',
+      apiVersion: '2025-08-27.basil',
     })
 
     const body = await readBody(event)

@@ -11,26 +11,26 @@ import {
 import AppFooterItem from './AppFooterItem.vue'
 
 const footerLinks = ref([
-  { to: '/collections/new-release', label: 'New Release' },
-  { to: '/pre-orders', label: 'Pre-orders' },
-  { to: '/collections/all', label: 'Genres' },
-  { to: '/pop', label: 'Pop' },
+  { to: '/thrift', label: 'Thrifted Luxury' },
+  { to: '/gift', label: 'Gift Experience' },
+  { to: '/handmade', label: 'Handmade Bath & Body' },
+  { to: '/collections/all', label: 'Full Catalog' },
 ])
 
 const supportLinks = ref([
-  { to: '/about', label: 'About' },
-  { to: '/faq', label: 'FAQ' },
-  { to: '/contact', label: 'Contact' },
-  { to: '/shipping', label: 'Shipping' },
-  { to: '/returns', label: 'Returns' },
+  { to: '/gift', label: 'Gift Builder' },
+  { to: '/cart', label: 'Cart' },
+  { to: '/checkout', label: 'Checkout' },
+  { to: '/collections/all', label: 'Shop' },
+  { to: '/account/profile', label: 'Account' },
 ])
 
 const accountLinks = ref([
-  { to: '/login', label: 'Login' },
-  { to: '/register', label: 'Register' },
-  { to: '/shipping', label: 'My Cart' },
-  { to: '/returns', label: 'My Wishlist' },
-  { to: '/orders', label: 'My Order' },
+  { to: '/account/login', label: 'Login' },
+  { to: '/account/register', label: 'Register' },
+  { to: '/cart', label: 'My Cart' },
+  { to: '/wishlist', label: 'My Wishlist' },
+  { to: '/account/profile', label: 'My Account' },
 ])
 
 const socialLinks = ref([

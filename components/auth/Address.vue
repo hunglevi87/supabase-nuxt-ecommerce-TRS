@@ -292,7 +292,8 @@ async function deleteAddress(id: string) {
   }
 }
 
-function formatDate(timestamp: string) {
+function formatDate(timestamp: string | null) {
+  if (!timestamp) return ''
   return new Date(timestamp).toLocaleDateString()
 }
 

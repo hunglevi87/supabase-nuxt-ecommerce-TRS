@@ -127,7 +127,9 @@ const productWithVendorQuery = supabase
 
 type Product = QueryData<typeof productWithVendorQuery>
 
-const productIds = computed(() => cartItems.value.map((item) => item.productId))
+const productIds = computed(() =>
+  cartItems.value.map((item) => item.productId).filter((id): id is number => id != null),
+)
 const products = ref<Product>([])
 
 const fetchProducts = async () => {

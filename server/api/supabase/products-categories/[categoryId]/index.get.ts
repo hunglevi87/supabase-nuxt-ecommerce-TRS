@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
   let supabaseQuery = client
     .from(PRODUCTS_CATEGORIES)
     .select('products(*,vendors(name))')
-    .eq('categoryId', categoryId)
+    .eq('categoryId', Number(categoryId))
     .not('products(id)', 'is', null)
     .range(start, start + limit - 1)
 

@@ -36,7 +36,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
     user,
     async (newUser) => {
       if (newUser) {
-        wishlist.value = await getWishlistItems(newUser.id)
+        wishlist.value = (await getWishlistItems(newUser.id)) ?? []
       } else {
         wishlist.value = []
       }

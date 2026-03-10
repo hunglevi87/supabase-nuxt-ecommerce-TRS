@@ -20,11 +20,10 @@ const { searchProduct } = useApiServices()
 
 const links = ref([
   { to: '/', label: 'HOME' },
-  { to: '/about', label: 'ABOUT' },
-  { to: '/collections/new-release', label: 'NEW RELEASES' },
-  { to: '/pre-orders', label: 'PRE-ORDERS' },
-  { to: '/collections/all', label: 'GENRES' },
-  { to: '/faq', label: 'FAQ' },
+  { to: '/thrift', label: 'THRIFT' },
+  { to: '/gift', label: 'GIFT' },
+  { to: '/handmade', label: 'HANDMADE' },
+  { to: '/collections/all', label: 'CATALOG' },
 ])
 
 const { totalQuantity, isMiniCartVisible } = storeToRefs(useCartStore())
@@ -61,7 +60,7 @@ watchDebounced(
   searchKey,
   async (value) => {
     if (value.length > 1) {
-      products.value = await searchProduct(value)
+      products.value = (await searchProduct(value)) ?? []
     } else {
       products.value = []
     }

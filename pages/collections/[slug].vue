@@ -19,9 +19,9 @@
             {{ totalProducts }} Products
           </span>
 
-          <Select v-model="searchInfo.limit">
+          <Select v-model="limitStr">
             <SelectTrigger class="w-[60px]">
-              <SelectValue :placeholder="searchInfo.limit" />
+              <SelectValue :placeholder="limitStr" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -75,8 +75,8 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 
-// Array of pagination options
-const paginationOptions = [4, 8, 12, 16, 20]
+// Array of pagination options (strings for radix-vue Select compatibility)
+const paginationOptions = ['4', '8', '12', '16', '20']
 
 const supabase = useSupabaseClient()
 const slug = useRoute().params.slug
@@ -85,7 +85,7 @@ const { getProductsByCategory, getTotalProductsByCategory } = useApiServices()
 const collectionRef = useTemplateRef<HTMLElement>('collectionRef')
 
 const category = ref<Tables<'categories'>>()
-const products = ref<Tables<'products'>[]>([])
+const products = ref<(Tables<'products'> & { vendors: { name: string | null } | null })[]>([])
 const totalProducts = ref<number>(0)
 
 const isLoading = ref(false)
@@ -97,11 +97,17 @@ const searchInfo = reactive<CollectionSearchParams>({
   productType: [],
 })
 
+/** String proxy so radix-vue Select binds cleanly */
+const limitStr = computed({
+  get: () => String(searchInfo.limit),
+  set: (v: string) => { searchInfo.limit = Number(v) },
+})
+
 async function fetchCategory() {
   const { data, error } = await supabase
     .from('categories')
     .select('*')
-    .eq('slug', slug)
+    .eq('slug', slug as string)
   if (error) {
     console.error(error)
   } else {

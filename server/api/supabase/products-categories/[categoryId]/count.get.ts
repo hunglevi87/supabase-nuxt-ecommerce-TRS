@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
 
   if (productType && productType.length > 0) {
     const types = Array.isArray(productType) ? productType : [productType]
-    query = query.in('products.productType', types)
+    query = query.in('products.productType', types as Database['public']['Enums']['productType'][])
   }
 
   const { count, error } = await query

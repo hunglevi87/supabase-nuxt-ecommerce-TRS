@@ -91,7 +91,7 @@ import {
 } from '@/components/ui/tooltip'
 
 type Product = Tables<'products'> & {
-  vendors: { name: string }
+  vendors: { name: string | null } | null
 }
 type CartItem = TablesInsert<'cartItems'>
 
