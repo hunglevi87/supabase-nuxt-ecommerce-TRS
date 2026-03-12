@@ -27,7 +27,10 @@ definePageMeta({
       </div>
       <div class="rounded-xl border border-border p-4">
         <p class="text-sm text-muted-foreground">Automations</p>
-        <p class="mt-2 text-lg font-medium">Pending setup</p>
+        <NuxtLink to="/admin/jobs" class="mt-2 inline-block text-lg font-medium text-primary hover:underline">
+          Emma Jobs
+        </NuxtLink>
+        <p class="text-xs text-muted-foreground">View AI + eBay orchestration status</p>
       </div>
     </div>
   </section>
