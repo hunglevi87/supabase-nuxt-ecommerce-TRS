@@ -3,7 +3,7 @@ export type Marketplace = 'ebay'
 export type JobStatus = 'pending' | 'running' | 'done' | 'failed'
 
 export type EmmaHand =
-  | 'botsee-stash-review'
+  | 'gemini-stash-review'
   | 'classify-product'
   | 'price-product'
   | 'generate-selfcare-bundles'
@@ -43,7 +43,7 @@ export interface EmmaListingGenPayload {
   constraints?: Record<string, unknown>
 }
 
-export interface BotseeAnalysisPayload {
+export interface GeminiAnalysisPayload {
   productIds?: string[]
   segment?: 'high-value' | 'self-care' | 'new-arrivals' | 'thrifted'
   includeTelegramSummary?: boolean

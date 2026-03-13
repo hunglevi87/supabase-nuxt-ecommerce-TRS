@@ -48,7 +48,10 @@ const failedCount = computed(() => jobs.value.filter(job => job.status === 'fail
 const aiCount = computed(() =>
   jobs.value.filter((job) => {
     const action = job.action.toLowerCase()
-    return action.includes('botsee') || action.includes('classify') || action.includes('price')
+    return action.includes('gemini')
+      || action.includes('classify')
+      || action.includes('price')
+      || action.includes('generate-selfcare-bundles')
   }).length,
 )
 const ebayCount = computed(() => jobs.value.filter(job => job.marketplace.toLowerCase() === 'ebay').length)

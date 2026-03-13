@@ -1,141 +1,99 @@
-# 🛍️ Vue E-commerce Platform
-
-A modern e-commerce platform built with Vue.js, Nuxt.js, and Supabase, offering real-time updates, secure authentication, and a responsive shopping experience.
-
-## 🛠️ Tech Stack
-
-- **Frontend**
-  - Vue.js 3
-  - Nuxt.js 3
-  - Tailwind CSS
-  - Pinia (State Management)
-  - Typescript
-
-- **Backend**
-  - Supabase
-  - PostgreSQL
-  - Row Level Security
-  - Real-time subscriptions
-
-## 📋 Prerequisites
-
-- Node.js (v18 or higher)
-- npm
-- Supabase account
-- Git
-
-## 🚀 Getting Started
-
-1. **Clone the repository**
+# The Relic Shop (TRS)
+Nuxt 3 + Supabase storefront/admin for The Relic Shop, with OpenFang + Gemini AI orchestration and eBay MCP automation hooks.
+## Current Implementation Status
+- Core Nuxt storefront/admin shell is active (Ionic, PWA, Supabase integration).
+- eBay MCP integration slice is implemented:
+  - typed sync job contracts
+  - eBay adapter service
+  - job runner with retry/backoff and status persistence
+  - admin jobs monitor API/UI
+- AI orchestration is OpenFang + Gemini only (`gemini-stash-review`, `classify-product`, `price-product`, `generate-selfcare-bundles`).
+- Botsee is removed from active orchestration/config.
+## Tech Stack
+- Nuxt 3 + Vue 3
+- Ionic (`@nuxtjs/ionic`)
+- Supabase (`@nuxtjs/supabase`, `@supabase/supabase-js`)
+- Pinia
+- Tailwind CSS
+- Stripe
+- TypeScript
+## Prerequisites
+- Node.js 18+
+- Corepack enabled
+- `pnpm@10.31.0` (pinned in `package.json`)
+- Supabase project credentials
+- (For orchestration) eBay MCP service credentials and OpenFang AI endpoint credentials
+## Setup
+1. Install pnpm via Corepack and dependencies:
 ```bash
-git clone https://github.com/haithanhphan1603/supabase-nuxt-ecommerce.git
-cd supabase-nuxt-ecommerce
+corepack enable
+corepack prepare pnpm@10.31.0 --activate
+pnpm install
 ```
-
-2. **Install dependencies**
+2. Copy env template and configure:
 ```bash
-npm install
+cp .env.example .env
 ```
-
-3. **Configure environment variables**
-Fill in your Supabase credentials in the `.env` file:
-```
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_anon_key
-```
-
-4. **Run development server**
+Fill `.env` with required values for your target workflow.
+## Key Environment Variables
+Minimum for app + Supabase access:
+- `SUPABASE_URL`
+- `SUPABASE_KEY` (or Supabase anon/public key where applicable)
+For orchestration runner/API execution:
+- `OPENFANG_RUNNER_TOKEN`
+- `OPENFANG_AI_ENDPOINT`
+- `OPENFANG_AI_API_KEY`
+- `OPENFANG_AI_TIMEOUT_MS`
+- `EBAY_MCP_BASE_URL`
+- `EBAY_MCP_API_KEY`
+- `EBAY_CLIENT_ID`
+- `EBAY_CLIENT_SECRET`
+- `EBAY_ENVIRONMENT`
+- `EBAY_REDIRECT_URI`
+- `EBAY_USER_REFRESH_TOKEN`
+- `EBAY_MARKETPLACE_ID`
+- `EBAY_CONTENT_LANGUAGE`
+- `EBAY_MCP_TIMEOUT_MS`
+## Run Commands
+Start dev server:
 ```bash
-npm run dev
+pnpm dev
 ```
-
-## 📁 Project Structure
-```
-├── 📂 .nuxt/                  # Build directory
-├── 📂 assets/                 # Uncompiled assets (images, styles, etc.)
-├── 📂 components/             # Vue components
-│   ├── cart/              # Shopping cart components
-│   ├── category/          # Category navigation and listing
-│   ├── common/            # Shared/reusable components
-│   ├── dialog/            # Modal and dialog components
-│   ├── product/           # Product-related components
-│   ├── section/           # Page section components
-│   ├── ui/                # Base UI components
-│   └── wishlist/          # Wishlist feature components
-├── composables/           # Vue composables (hooks)
-├── layouts/               # Page layouts
-├── lib/                   # Utility functions and core logic
-├── middleware/            # Route middleware
-├── pages/                 # Application pages/routes
-├── public/                # Static files
-├── server/                # Server-side logic and API routes
-├── store/                 # Pinia stores
-├── types/                 # TypeScript type definitions
-├── .env                   # Environment variables
-├── .eslintrc.json        # ESLint configuration
-├── .gitignore            # Git ignore patterns
-├── .prettierrc           # Prettier configuration
-├── app.config.ts         # App configuration
-├── app.vue               # Root Vue component
-└── components.json       # Components configuration
-```
-
-## 💻 Development
-
-### Database Setup
-
-1. Run the sql dump file
-
-2. Enable Row Level Security (RLS) policies
-
-### 🔐 Authentication Setup
-
-1. Configure authentication providers in Supabase dashboard
-2. Configure OAuth providers (if using social login)
-
-## 🚀 Deployment
-
-1. **Build the application**
+Build and preview:
 ```bash
-npm run build
+pnpm build
+pnpm preview
 ```
-
-2. **Deploy to your hosting platform**
+Lint and typecheck:
 ```bash
-npm run deploy
+pnpm lint
+pnpm typecheck
 ```
-
-## 🧪 Testing (to be implemented)
-
+## Orchestration Commands
+Deterministic cloud/local setup:
 ```bash
-# 🎯 Run unit tests
-npm run test:unit
-
-# 🔄 Run e2e tests
-npm run test:e2e
-
-# ✅ Run all tests
-npm run test
+pnpm setup:cloud
 ```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Vue.js team
-- Nuxt.js team
-- Supabase team
-- All contributors
-
----
-Made with ❤️ by Phan Hai
+Supabase sync queue smoke check:
+```bash
+pnpm smoke:sync-queue
+```
+Full orchestration validation:
+```bash
+pnpm validate:orchestration
+```
+Note: `smoke:sync-queue` requires `SUPABASE_URL` (or `NUXT_PUBLIC_SUPABASE_URL`) plus `SUPABASE_SERVICE_ROLE_KEY` (or `SUPABASE_KEY`).
+## Orchestration Endpoints
+- `GET /api/admin/jobs`
+  - List `sync_queue` jobs with status filter + pagination.
+- `POST /api/admin/jobs/run`
+  - Runs `runJobCycle` with optional `limit`, `baseBackoffSeconds`, and `maxBackoffSeconds`.
+  - Requires `x-openfang-runner-token` header (or bearer token) matching `OPENFANG_RUNNER_TOKEN`.
+## Relevant Paths
+- `server/services/openfang-job-runner.ts`
+- `server/services/ebay-mcp-adapter.ts`
+- `server/services/emma-ai-adapter.ts`
+- `server/api/admin/jobs.get.ts`
+- `server/api/admin/jobs/run.post.ts`
+- `pages/admin/jobs.vue`
+- `docs/emma-mcp-config.md`
