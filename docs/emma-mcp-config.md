@@ -31,3 +31,15 @@ Validate orchestration locally:
 - Authenticated endpoint: `POST /api/admin/jobs/run` with `x-openfang-runner-token` (or bearer token).
 - Supabase Edge Function cron invoking that endpoint.
 - External scheduler (CI job or cloud cron) invoking the same endpoint.
+## Handoff status (March 13, 2026)
+Completed:
+- Botsee references removed from active orchestration paths and docs.
+- Runner endpoint, retry/backoff behavior, and AI/eBay dispatch wiring are in place.
+- Local checks passed: `pnpm lint` (warnings only), `pnpm typecheck`.
+Blocked:
+- `pnpm validate:orchestration` cannot complete without Supabase runtime secrets (`SUPABASE_URL` and service key).
+- Final cloud run was deferred pending secret readiness confirmation.
+Resume from here:
+1. Ensure required Oz secrets exist for Supabase/eBay/OpenFang runtime.
+2. Run `pnpm validate:orchestration`.
+3. Execute final cloud run and capture run ID + outcome in plan/docs.

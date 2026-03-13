@@ -93,3 +93,9 @@ Deliver The Relic Shop storefront and admin as a Nuxt 3 \+ Ionic mobile\-respons
 * Naming convention lock: the AI system is Emma, with Gemini stash\\-critic capabilities orchestrated through OpenFang hands\\.
 * Operational lock: eBay automations should prefer `ebay-mcp` over ad\-hoc direct endpoint wiring so app/admin/Telegram all share the same behavior and permissions model\.
 * Implementation priority is integration fidelity \(shared schema, sync\-safe reads/writes, control\-plane observability, and storefront UX continuity\) rather than duplicating inventory ownership\.
+## Tonight Handoff \\(March 13, 2026\\)
+* Botsee has been removed from active orchestration paths; Gemini/OpenFang hands remain in scope\\.
+* Orchestration implementation status is advanced \\(adapter, runner, auth trigger endpoint, and docs all updated\\)\\.
+* Local checks completed: `pnpm lint` \\(warnings only\\) and `pnpm typecheck`\\.
+* Final cloud validation was deferred pending confirmed runtime secrets for Supabase smoke validation and end\\-to\\-end run execution\\.
+* Resume path: verify secrets, run `pnpm validate:orchestration`, execute final cloud run, then record run IDs/results in this plan and the Oz plan artifact\\.

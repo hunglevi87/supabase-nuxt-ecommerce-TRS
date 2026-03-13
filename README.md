@@ -9,6 +9,10 @@ Nuxt 3 + Supabase storefront/admin for The Relic Shop, with OpenFang + Gemini AI
   - admin jobs monitor API/UI
 - AI orchestration is OpenFang + Gemini only (`gemini-stash-review`, `classify-product`, `price-product`, `generate-selfcare-bundles`).
 - Botsee is removed from active orchestration/config.
+### Tonight handoff (March 13, 2026)
+- Local gates completed: `pnpm lint` (warnings only) and `pnpm typecheck`.
+- Final cloud validation/run not completed yet because runtime secrets for Supabase validation were not confirmed in Oz secret store.
+- Next action: set/verify required secrets, run `pnpm validate:orchestration`, then run one final cloud execution and record run IDs.
 ## Tech Stack
 - Nuxt 3 + Vue 3
 - Ionic (`@nuxtjs/ionic`)
