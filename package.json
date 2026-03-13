@@ -10,7 +10,10 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "update-types": "pnpm dlx supabase gen types --lang=typescript --project-id \"agkajtjnmvpxvycwpvrz\" > types/database.types.ts"
+    "update-types": "pnpm dlx supabase gen types --lang=typescript --project-id \"agkajtjnmvpxvycwpvrz\" > types/database.types.ts",
+    "setup:cloud": "node scripts/setup-cloud-env.mjs",
+    "smoke:sync-queue": "node scripts/smoke-sync-queue.mjs",
+    "validate:orchestration": "pnpm lint && pnpm typecheck && pnpm smoke:sync-queue"
   },
   "dependencies": {
     "@nuxt/content": "^3.12.0",

@@ -15,7 +15,7 @@ Deliver The Relic Shop storefront and admin as a Nuxt 3 \+ Ionic mobile\-respons
 * Shipping: Shippo API\.
 * Transactional Email: Resend\.
 * CMS: Directus \(content source and publish target\)\.
-* AI: Gemini \+ OpenFang, orchestrated via an admin AI control panel that can trigger cross\-system workflows for TRS storefront and Hidden\-Gem inventory operations; the customer\-facing AI system name is Emma, while Botsee is retained as the OpenFang stash\-critic hand/skill identifier\.
+* AI: Gemini \\+ OpenFang, orchestrated via an admin AI control panel that can trigger cross\\-system workflows for TRS storefront and Hidden\\-Gem inventory operations; the customer\\-facing AI system name is Emma, with Gemini hands handled through OpenFang orchestration\\.
 * Marketplace channel: eBay only for listing sync and best\-offer/haggle, executed through `ebay-mcp` as the standardized eBay tool layer for Emma/OpenFang automations\.
 * WordPress/WooCommerce: removed from final system scope\.
 ## Brand and Experience System \(Locked\)
@@ -25,18 +25,18 @@ Deliver The Relic Shop storefront and admin as a Nuxt 3 \+ Ionic mobile\-respons
 * Typography and motion direction: Cormorant Garamond, Playfair Display, Inter; bee/snake micro\-interactions and crest\-driven premium states\.
 ## Data Model Plan \(Supabase\)
 * Treat `sellers`, `products`, `listings`, `integrations`, `ai_generations`, and `sync_queue` as shared canonical tables owned operationally by Hidden\-Gem and consumed by TRS with compatible RLS access patterns\.
-* Extend `products` with taxonomy fields used by Emma/Botsee and bundle generation: `product_type` \(`relic_handmade` | `bbw_repurposed` | `thrifted_luxury`\), `collection`, `scent_profile[]`, `use_case[]`, `bundle_role` \(`hero` | `support` | `filler`\), and pricing\-assist fields \(`suggested_price`, `price_floor`, `price_ceiling`, `pricing_confidence`\)\.
+* Extend `products` with taxonomy fields used by Emma/Gemini and bundle generation: `product_type` \\(`relic_handmade` | `bbw_repurposed` | `thrifted_luxury`\\), `collection`, `scent_profile[]`, `use_case[]`, `bundle_role` \\(`hero` | `support` | `filler`\\), and pricing\\-assist fields \\(`suggested_price`, `price_floor`, `price_ceiling`, `pricing_confidence`\\)\\.
 * Build next: `orders`, `order_items`, `gift_vault_items`, `builder_settings`, `draft_gift_boxes`, `jobs`, `content_pages`, `audit_logs`, `wishlists`, `user_roles`, `leads`, `gift_sets` \(if separated from single products\), and control\-plane metadata needed to coordinate OpenFang tasks and Directus publish state\.
 * Add command/notification plumbing tables as needed for automation observability \(`telegram_message_queue` and optional `telegram_commands`\) plus conversation state in `conversations`/`messages` for in\-app assistant interactions\.
 * Stripe webhook ownership: order creation, item snapshot persistence, status updates, shipping label metadata, and email dispatch traceability\.
 * Maintain explicit order typing \(`thrifted`, `gift_set`, `gift_box`, `bath_body`\) and immutable order item snapshots for post\-purchase auditability\.
 ## AI Hands and Orchestration \(Locked\)
-* Stash critic hand \(Botsee\): periodic or on\-demand stash reviews that output long\-form draft content, short Discover cards, and Telegram\-ready summaries\.
+* Stash critic hand \\(Gemini\\): periodic or on\\-demand stash reviews that output long\\-form draft content, short Discover cards, and Telegram\\-ready summaries\\.
 * Bundle architect hand: generates tiered gift bundles from compatible `products` \+ `gift_vault_items` using scent/use\-case/bundle\-role compatibility\.
 * Self\-care merch assistant hand: classifies RELIC\-made vs B&BW repurposed items, recommends bundle role, and suggests pricing ranges\.
-* Core job types in `jobs`: `botsee-stash-review`, `classify-product`, `price-product`, `generate-selfcare-bundles`, plus eBay action jobs \(publish/update/offer/reprice\) that delegate to `ebay-mcp` tools\.
+* Core job types in `jobs`: `gemini-stash-review`, `classify-product`, `price-product`, `generate-selfcare-bundles`, plus eBay action jobs \\(publish/update/offer/reprice\\) that delegate to `ebay-mcp` tools\\.
 * Execution pattern: clients \(Hidden\-Gem app, TRS admin, Telegram webhook\) enqueue `jobs`; `openfang-job-runner` Edge Function executes hand calls and `ebay-mcp` actions, then writes structured results to `jobs.result` plus domain tables\.
-* Publishing pattern: Botsee long\-form outputs go to Directus as drafts for editorial approval; short\-form outputs flow to Discover surfaces; operational summaries flow to Telegram\.
+* Publishing pattern: Gemini long\\-form outputs go to Directus as drafts for editorial approval; short\\-form outputs flow to Discover surfaces; operational summaries flow to Telegram\\.
 ## Implementation Phases
 ### Phase 0: Foundation \(Days 1\-5\)
 * Fork baseline repo and install locked modules: `@nuxtjs/ionic`, `@nuxtjs/supabase`, and Directus integration client\(s\) for runtime content fetch/publish workflows\.
@@ -62,7 +62,7 @@ Deliver The Relic Shop storefront and admin as a Nuxt 3 \+ Ionic mobile\-respons
 * Build inventory manager, sync monitor, gift set architect, customer/order hub, and operational analytics\.
 * Add eBay command center surfaces for listing state, offer/haggle actions, and queued eBay job outcomes powered by `ebay-mcp`\.
 * Implement AI control panel experience for Emma “custom hands” orchestration, writing to `jobs` with execution/results lifecycle and audit trails across TRS \+ Hidden\-Gem workflows\.
-* Add dedicated admin surfaces: `AI Bundles` \(review/publish AI\-generated sets\) and `Botsee Insights` \(stash critic outputs and recommendations\)\.
+* Add dedicated admin surfaces: `AI Bundles` \\(review/publish AI\\-generated sets\\) and `Gemini Insights` \\(stash critic outputs and recommendations\\)\\.
 * Add Directus publishing controls so OpenFang\-generated long\-form content can be reviewed, approved, and reflected in storefront content pages\.
 * Add notification configuration surface, role management \(`user_roles`\), and `audit_logs` visibility\.
 ### Phase 4: AI Gift Concierge \(Days 46\-55\)
@@ -84,12 +84,12 @@ Deliver The Relic Shop storefront and admin as a Nuxt 3 \+ Ionic mobile\-respons
 * Customer account reflects order/tracking status, while payout lifecycle flows through Stripe to Found bank\.
 * Hidden\-Gem/TRS/Telegram assistant actions enqueue `jobs`; `openfang-job-runner` executes and persists structured outputs\.
 * eBay\-facing jobs route through `ebay-mcp` tools so listing, order, and offer operations use one consistent API contract\.
-* Botsee stash\-review outputs publish as Directus drafts for admin approval, then surface in storefront content and Discover snippets after publish\.
+* Gemini stash\\-review outputs publish as Directus drafts for admin approval, then surface in storefront content and Discover snippets after publish\\.
 * Telegram command flow \(`telegram-webhook`\) mirrors app/admin capabilities by translating `/openfang` commands into shared `jobs` requests\.
 ## Execution Notes
 * This version supersedes prior variants by removing WooCommerce and keeping TRS focused on shared Supabase \+ storefront/admin delivery\.
 * Hidden\-Gem is in scope as the upstream inventory producer; TRS is in scope as the storefront/admin consumer and orchestration surface on the same Supabase truth layer\.
 * Directus is included as the content publishing backend so OpenFang outputs can be promoted into storefront\-visible content with review/auditability\.
-* Naming convention lock: the AI system is Emma, and Botsee refers specifically to the stash\-critic hand/skill naming already used in OpenFang tooling\.
+* Naming convention lock: the AI system is Emma, with Gemini stash\\-critic capabilities orchestrated through OpenFang hands\\.
 * Operational lock: eBay automations should prefer `ebay-mcp` over ad\-hoc direct endpoint wiring so app/admin/Telegram all share the same behavior and permissions model\.
 * Implementation priority is integration fidelity \(shared schema, sync\-safe reads/writes, control\-plane observability, and storefront UX continuity\) rather than duplicating inventory ownership\.
