@@ -93,9 +93,57 @@ Deliver The Relic Shop storefront and admin as a Nuxt 3 \+ Ionic mobile\-respons
 * Naming convention lock: the AI system is Emma, with Gemini stash\\-critic capabilities orchestrated through OpenFang hands\\.
 * Operational lock: eBay automations should prefer `ebay-mcp` over ad\-hoc direct endpoint wiring so app/admin/Telegram all share the same behavior and permissions model\.
 * Implementation priority is integration fidelity \(shared schema, sync\-safe reads/writes, control\-plane observability, and storefront UX continuity\) rather than duplicating inventory ownership\.
-## Tonight Handoff \\(March 13, 2026\\)
-* Botsee has been removed from active orchestration paths; Gemini/OpenFang hands remain in scope\\.
-* Orchestration implementation status is advanced \\(adapter, runner, auth trigger endpoint, and docs all updated\\)\\.
-* Local checks completed: `pnpm lint` \\(warnings only\\) and `pnpm typecheck`\\.
-* Final cloud validation was deferred pending confirmed runtime secrets for Supabase smoke validation and end\\-to\\-end run execution\\.
-* Resume path: verify secrets, run `pnpm validate:orchestration`, execute final cloud run, then record run IDs/results in this plan and the Oz plan artifact\\.
+## Tonight Handoff (March 13, 2026)
+**Validation Run Results (Local - March 13, 2026):**
+
+| Check | Status | Details |
+|-------|--------|---------|
+| `pnpm lint` | ✅ Passed | 6 warnings (vue/require-default-prop in UI components) |
+| `pnpm typecheck` | ✅ Passed | Warnings only (shadcn component name collisions) |
+| `smoke:sync-queue` | ⚠️ **BLOCKED** | Supabase connection works, TRS FlipAgent tables missing |
+| Hidden-Gem `npm run lint` | ✅ Passed | 8 errors (unescaped entities), 37 warnings after --fix |
+| Hidden-Gem `npm run check:types` | ⚠️ **8 errors** | Type mismatches in navigation + missing assets + pRetry types |
+
+**Database Schema Gap Identified:**
+- Hidden-Gem tables exist: `users`, `stash_items`, `sync_queue`
+- TRS FlipAgent tables **MISSING**: `sellers`, `products`, `listings`, `integrations`, `ai_generations`
+- **Root Cause**: TRS Supabase migrations (`supabase/migrations/20260308*.sql`) not applied to shared database
+
+**Environment Status:**
+- ✅ Supabase credentials verified (URL + Service Role Key)
+- ✅ eBay credentials present (Client ID, Secret, Refresh Token)
+- ⚠️ OpenFang/Emma orchestration vars empty (OPENFANG_RUNNER_TOKEN, EBAY_MCP_BASE_URL, OPENFANG_AI_ENDPOINT, OPENFANG_AI_API_KEY)
+
+**Resume Path:**
+1. Apply TRS Supabase migrations via Supabase dashboard SQL Editor or CLI
+2. Verify tables: `sellers`, `products`, `listings`, `integrations`, `ai_generations`, `sync_queue`
+3. Populate OpenFang/Emma orchestration secrets
+4. Re-run `pnpm validate:orchestration` (lint + typecheck + smoke:sync-queue)
+5. Execute final cloud run and capture run IDs/results
+
+## Progress Update (Haggle Slice)
+
+### Implemented in this repository
+* Haggle UI scaffold added on storefront product pages via `components/HaggleModal.vue` and `pages/products/[slug].vue`.
+* Admin offer triage surface added at `pages/admin/offers.vue`.
+* Offer APIs added:
+  * `server/api/offers.ts`
+  * `server/api/offers/accept.post.ts`
+  * `server/api/offers/decline.post.ts`
+* Stripe offer settlement webhook logic added in `server/api/stripe/webhook.post.ts`.
+* Supabase migration added for haggle schema in `supabase/migrations/202603180001_haggle_feature_schema.sql`.
+
+### Unfinished / needs completion
+* Shared Supabase target environment still requires migration verification to ensure all FlipAgent + haggle tables/columns are present.
+* Offer expiry handling policy should be finalized and made deterministic (scheduled job vs read-time expiration transition).
+* Live E2E run in target environment is still required to confirm full offer/email/webhook behavior with real provider delivery.
+
+### Recommended next implementation pass
+1. Apply/verify migrations in shared Supabase and smoke test `offers` + webhook paths.
+2. Execute a live offer flow to verify Resend delivery and Stripe webhook persistence in target environment.
+3. Confirm expiry policy implementation choice and enforce it consistently.
+4. Run manual E2E check: make offer -> accept/decline -> Stripe checkout -> webhook persistence.
+
+### Completed after this plan update
+* Resend transactional emails are now integrated for seller notifications, buyer acceptance/decline messages, and post-payment confirmation.
+* Validation completed successfully: `pnpm lint`, `pnpm typecheck`, and `pnpm validate:orchestration` (warnings-only baseline preserved).

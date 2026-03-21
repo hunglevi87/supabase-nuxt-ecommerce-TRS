@@ -9,10 +9,29 @@ Nuxt 3 + Supabase storefront/admin for The Relic Shop, with OpenFang + Gemini AI
   - admin jobs monitor API/UI
 - AI orchestration is OpenFang + Gemini only (`gemini-stash-review`, `classify-product`, `price-product`, `generate-selfcare-bundles`).
 - Botsee is removed from active orchestration/config.
+### Current status (March 21, 2026)
+- ✅ Haggle slice is implemented in Nuxt paths (`components/HaggleModal.vue`, `pages/admin/offers.vue`, `server/api/offers.ts`, `server/api/offers/accept.post.ts`, `server/api/offers/decline.post.ts`, `server/api/stripe/webhook.post.ts`).
+- ✅ Resend email wiring is in place for seller notification, buyer accept/decline updates, and order confirmation.
+- ✅ Validation re-run completed successfully: `pnpm lint`, `pnpm typecheck`, `pnpm validate:orchestration` (with expected warnings only); `smoke:sync-queue` reachable.
+- ⚠️ Remaining operational gap: verify shared Supabase migrations/tables in target environment and run live E2E offer->payment->webhook email confirmation.
 ### Tonight handoff (March 13, 2026)
-- Local gates completed: `pnpm lint` (warnings only) and `pnpm typecheck`.
-- Final cloud validation/run not completed yet because runtime secrets for Supabase validation were not confirmed in Oz secret store.
-- Next action: set/verify required secrets, run `pnpm validate:orchestration`, then run one final cloud execution and record run IDs.
+**Validation Run Results (Local - March 13, 2026):**
+- ✅ `pnpm lint`: Passed (6 warnings only - vue/require-default-prop in UI components)
+- ✅ `pnpm typecheck`: Passed (warnings only - component name collisions in shadcn UI)
+- ⚠️ `pnpm smoke:sync-queue`: **BLOCKED** - Supabase connection works, but TRS FlipAgent tables (`sellers`, `products`, `listings`, `integrations`, `ai_generations`) are missing from database. Hidden-Gem tables (`users`, `stash_items`, `sync_queue`) exist.
+
+**Required Action:** Apply TRS Supabase migrations (`supabase/migrations/20260308*.sql`) to create missing tables before full orchestration validation.
+
+**Environment Status:**
+- ✅ Supabase credentials verified (URL + Service Role Key)
+- ✅ eBay credentials present (Client ID, Secret, Refresh Token)
+- ⚠️ OpenFang/Emma orchestration vars empty (OPENFANG_RUNNER_TOKEN, EBAY_MCP_BASE_URL, OPENFANG_AI_ENDPOINT, OPENFANG_AI_API_KEY)
+
+**Next Steps:**
+1. Apply TRS Supabase migrations via dashboard or CLI
+2. Re-run `pnpm smoke:sync-queue` to confirm table creation
+3. Populate OpenFang/Emma orchestration secrets
+4. Execute final cloud validation and record run IDs
 ## Tech Stack
 - Nuxt 3 + Vue 3
 - Ionic (`@nuxtjs/ionic`)

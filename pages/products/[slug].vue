@@ -94,12 +94,23 @@
           </div>
         </div>
 
-        <Button
-          class="w-full md:w-auto uppercase font-bold px-8 py-3 hover:bg-violet-700 transition-colors"
-          @click="addToCart"
-        >
-          Add to Cart
-        </Button>
+        <div class="flex gap-3 flex-col md:flex-row">
+          <Button
+            class="flex-1 md:flex-none uppercase font-bold px-8 py-3 hover:bg-violet-700 transition-colors"
+            @click="addToCart"
+          >
+            Add to Cart
+          </Button>
+
+          <Button
+            v-if="canHaggle"
+            variant="outline"
+            class="flex-1 md:flex-none uppercase font-bold px-8 py-3"
+            @click="openHaggleModal = true"
+          >
+            💬 Make an Offer
+          </Button>
+        </div>
 
         <div class="relative">
           <div
@@ -148,6 +159,16 @@
       </div>
     </div>
     <!-- Skeleton -->
+
+    <!-- Haggle Modal -->
+    <HaggleModal
+      v-if="product"
+      :product-id="String(product.id)"
+      :list-price="product.unitPrice ?? 0"
+      :is-open="openHaggleModal"
+      @update:is-open="openHaggleModal = $event"
+      @success="handleHaggleSuccess"
+    />
   </div>
 </template>
 
@@ -155,6 +176,7 @@
 import Toaster from '~/components/ui/toast/Toaster.vue'
 import { useToast } from '~/components/ui/toast'
 import AppLink from '~/components/common/AppLink.vue'
+import HaggleModal from '~/components/HaggleModal.vue'
 import type { QueryData } from '@supabase/supabase-js'
 import { Heart } from 'lucide-vue-next'
 import Skeleton from '~/components/ui/skeleton/Skeleton.vue'
@@ -166,6 +188,7 @@ const supabase = useSupabaseClient()
 const route = useRoute()
 
 const isLoading = ref(false)
+const openHaggleModal = ref(false)
 
 const productWithVendorsCategoriesQuery = supabase
   .from('products')
@@ -180,6 +203,9 @@ type ProductWithVendorsCategories = QueryData<
 type CartItem = TablesInsert<'cartItems'>
 
 const product = ref<ProductWithVendorsCategories | null>(null)
+const canHaggle = computed(() => {
+  return Boolean((product.value as (ProductWithVendorsCategories & { allows_haggle?: boolean }) | null)?.allows_haggle)
+})
 
 const showFullDescription = ref(false)
 const description = ref<HTMLElement | null>(null)
@@ -202,6 +228,14 @@ function addToCart() {
     id: crypto.randomUUID(),
   }
   cartStore.addToCart(cartItem)
+}
+
+function handleHaggleSuccess(_offerId: string) {
+  toast({
+    title: '✅ Offer Submitted!',
+    description: 'Check your email for updates. The seller will review within 48 hours.',
+  })
+  openHaggleModal.value = false
 }
 
 watch(height, () => {
